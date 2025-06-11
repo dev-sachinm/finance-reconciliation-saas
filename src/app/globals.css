@@ -47,6 +47,10 @@ body {
   cursor: pointer;
 }
 
+.form-submit-button-logout{
+  float: left;  
+}
+
 .form-submit-button-disabled{
   color: #838383;
 }
