@@ -6,16 +6,18 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 type User = {
-  username: string;
+  email: string;
   password: string;
+  confirmPassword: string;
 };
 
-export default function Login() {
+export default function resetPassword() {
   const router = useRouter();
 
   const [user, setUser] = useState<User>({
-    username: '',
+    email: '',
     password: '',
+    confirmPassword: '',
   });
 
   const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -23,7 +25,12 @@ export default function Login() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const filled = user.username.trim() && user.password.trim();
+    const filled = user.email.trim() && user.password.trim();
+    if(user.password !=='' && user.confirmPassword!=='' && user.password!==user.confirmPassword){
+      setError('Password and Confirm Password not matching')
+    }else if(user.password===user.confirmPassword){
+      setError('')
+    }
     setButtonDisabled(!filled);
   }, [user]);
 
@@ -32,15 +39,15 @@ export default function Login() {
     setUser(prev => ({ ...prev, [name]: value }));
   };
 
-  const login = async () => {
+  const resetPassword = async () => {
     try {
       setLoading(true);
       setError('');
 
-      const response = await axios.post('/api/users/login', user);
-      router.push(`/profile/${response.data.user.id}`);
+      const response = await axios.post('/api/users/resetPassword', user);
+      router.push('/login');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || 'Reset password failed');
     } finally {
       setLoading(false);
     }
@@ -49,7 +56,7 @@ export default function Login() {
   return (
     <div className="form-container">
       <div className="form-row-wrapper">
-        <h1 className="sign-up-title">⚝ Login Details ⚝</h1>
+        <h1 className="sign-up-title">⚝ Reset Password ⚝</h1>
       </div>
 
       {error && (
@@ -61,13 +68,13 @@ export default function Login() {
       <div className="p-2 form-field-separator" />
 
       <div className="form-row-wrapper">
-        <label className="form-label" htmlFor="username">Username:</label>
+        <label className="form-label" htmlFor="email">Email:</label>
         <input
           className="p-1 border"
           type="text"
-          id="username"
-          name="username"
-          value={user.username}
+          id="email"
+          name="email"
+          value={user.email}
           onChange={handleChange}
         />
       </div>
@@ -85,11 +92,21 @@ export default function Login() {
           onChange={handleChange}
         />
       </div>
-
       <div className="form-row-wrapper">
-        <div className="form-row-inner width33">
+        <label className="form-label" htmlFor="confirmPassword">Confirm Password:</label>
+        <input
+          className="p-1 border"
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          value={user.confirmPassword}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="form-row-wrapper">
+        <div className="form-row-inner">
           <button
-            onClick={login}
+            onClick={resetPassword}
             className={
               buttonDisabled
                 ? 'form-submit-button form-submit-button-disabled'
@@ -108,19 +125,14 @@ export default function Login() {
                 />
               </>
             ) : (
-              'Login'
+              'Reset Password'
             )}
           </button>
         </div>
 
-        <div className="form-row-inner width33">
-          <Link href="/signup" className="form-submit-button">
-            Sign Up
-          </Link>
-        </div>
-        <div className="form-row-inner width33">
-          <Link href="/resetPassword" className="form-submit-button">
-            Reset Password
+        <div className="form-row-inner">
+          <Link href="/login" className="form-submit-button">
+            Login
           </Link>
         </div>
       </div>

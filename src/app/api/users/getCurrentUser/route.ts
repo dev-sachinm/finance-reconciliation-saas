@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDataFromToken } from '@/app/helpers/getDataFromToken';
-import connect from '@/dbConfig/dbConfig';
+import { getDataFromToken } from '@/app/helpers/get-data-from-token';
+import connect from '@/dbConfig/db-config';
 import User from '@/models/userModel';
 
 export async function GET(request: NextRequest) {

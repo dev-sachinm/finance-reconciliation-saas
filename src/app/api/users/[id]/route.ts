@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import connect from '@/dbConfig/dbConfig';
+import connect from '@/dbConfig/db-config';
 import User from '@/models/userModel';
 import { NextResponse } from 'next/server';
 

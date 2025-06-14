@@ -1,4 +1,4 @@
-import connect from "@/dbConfig/dbConfig";
+import connect from "@/dbConfig/db-config";
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
@@ -26,9 +26,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!user.isActive) {
+    if (!user.isVerified) {
       return NextResponse.json(
-        { message: "User is not activated" },
+        { message: "User is not verified" },
         { status: 403 }
       );
     }

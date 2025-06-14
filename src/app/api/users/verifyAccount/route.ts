@@ -1,7 +1,7 @@
-import connect from '@/dbConfig/dbConfig';
+import connect from '@/dbConfig/db-config';
 import User from '@/models/userModel';
 import { NextRequest, NextResponse } from 'next/server';
-import { getDataFromToken } from '@/app/helpers/getDataFromToken';
+import { getDataFromToken } from '@/app/helpers/get-data-from-token';
 import { isValidObjectId } from 'mongoose';
 
 export async function POST(request: NextRequest) {

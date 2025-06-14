@@ -1,4 +1,4 @@
-import connect from "@/dbConfig/dbConfig";
+import connect from "@/dbConfig/db-config";
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const user = await User.findById(id);
+    const user = await User.findById(id).select("-password");
     if (!user) {
       return NextResponse.json(
         { message: "User not found" },
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       to: user.email,
       subject: process.env.ACCOUNT_VERIFY_EMAIL_SUBJECT!,
       html: `
-        <h1>Please verify your account</h1>
+        <h1>Hello ${user.username},</h1>
         <p>Click <a href="${verificationUrl}">here</a> to verify your email address.</p>
         <p>This link will expire in 24 hours.</p>
         <p>If you didn't request this, please ignore this email.</p>

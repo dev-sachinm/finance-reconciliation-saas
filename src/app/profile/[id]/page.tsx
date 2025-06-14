@@ -9,7 +9,6 @@ type User = {
   _id: string;
   username: string;
   email: string;
-  // Add other fields as needed
 };
 
 type Props = {
