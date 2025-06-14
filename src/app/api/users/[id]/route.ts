@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import connect from '@/dbConfig/dbConfig';
+import connect from '@/dbConfig/db-config';
 import User from '@/models/userModel';
 import { NextResponse } from 'next/server';
 
@@ -12,7 +12,6 @@ export async function GET(
 
     const { id } = params;
 
-    // Validate ObjectId before querying
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
         { message: 'Invalid user ID' },
@@ -20,7 +19,7 @@ export async function GET(
       );
     }
 
-    const user = await User.findById(id).select('-password'); // Omit password
+    const user = await User.findById(id).select('-password');
 
     if (!user) {
       return NextResponse.json(

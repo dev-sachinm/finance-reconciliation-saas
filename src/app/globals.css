@@ -25,6 +25,19 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+
+.width50{
+  width: 50%;
+}
+
+.width33{
+  width: 33%;
+}
+
+.width25{
+  width: 25%;
+}
+
 .form-container{
   padding: 10px;
   border: 1px solid #ccc;
@@ -47,6 +60,10 @@ body {
   cursor: pointer;
 }
 
+.form-submit-button-logout{
+  float: left;  
+}
+
 .form-submit-button-disabled{
   color: #838383;
 }
@@ -58,7 +75,6 @@ body {
 }
 
 .form-row-inner{
-  width: 50%;
   float: left;
   text-align: center;
 }

@@ -1,23 +1,23 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 type User = {
   email: string;
-  username: string;
   password: string;
+  confirmPassword: string;
 };
 
-export default function SignUp() {
+export default function resetPassword() {
   const router = useRouter();
 
   const [user, setUser] = useState<User>({
     email: '',
-    username: '',
     password: '',
+    confirmPassword: '',
   });
 
   const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -25,35 +25,38 @@ export default function SignUp() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const allFieldsFilled =
-      user.email.trim() && user.username.trim() && user.password.trim();
-    setButtonDisabled(!allFieldsFilled);
-  }, [user]);
-
-  const signUp = async () => {
-    try {
-      setLoading(true);
-      setError('');
-      const signupResponse = await axios.post('/api/users/signup', user);
-      const sendEmailResponse = await axios.post('/api/users/sendVerificationEmail', {id: signupResponse.data.user.id, email:signupResponse.data.user.email})
-      console.log(sendEmailResponse)
-      router.push('/login');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Signup failed');
-    } finally {
-      setLoading(false);
+    const filled = user.email.trim() && user.password.trim();
+    if(user.password !=='' && user.confirmPassword!=='' && user.password!==user.confirmPassword){
+      setError('Password and Confirm Password not matching')
+    }else if(user.password===user.confirmPassword){
+      setError('')
     }
-  };
+    setButtonDisabled(!filled);
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUser(prev => ({ ...prev, [name]: value }));
   };
 
+  const resetPassword = async () => {
+    try {
+      setLoading(true);
+      setError('');
+
+      const response = await axios.post('/api/users/resetPassword', user);
+      router.push('/login');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Reset password failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="form-container">
       <div className="form-row-wrapper">
-        <h1 className="sign-up-title">⚝ Signing Up Details ⚝</h1>
+        <h1 className="sign-up-title">⚝ Reset Password ⚝</h1>
       </div>
 
       {error && (
@@ -62,28 +65,16 @@ export default function SignUp() {
         </div>
       )}
 
+      <div className="p-2 form-field-separator" />
+
       <div className="form-row-wrapper">
         <label className="form-label" htmlFor="email">Email:</label>
         <input
           className="p-1 border"
-          type="email"
+          type="text"
           id="email"
           name="email"
           value={user.email}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="p-2 form-field-separator" />
-
-      <div className="form-row-wrapper">
-        <label className="form-label" htmlFor="username">Username:</label>
-        <input
-          className="p-1 border"
-          type="text"
-          id="username"
-          name="username"
-          value={user.username}
           onChange={handleChange}
         />
       </div>
@@ -101,11 +92,21 @@ export default function SignUp() {
           onChange={handleChange}
         />
       </div>
-
+      <div className="form-row-wrapper">
+        <label className="form-label" htmlFor="confirmPassword">Confirm Password:</label>
+        <input
+          className="p-1 border"
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          value={user.confirmPassword}
+          onChange={handleChange}
+        />
+      </div>
       <div className="form-row-wrapper">
         <div className="form-row-inner">
           <button
-            onClick={signUp}
+            onClick={resetPassword}
             className={
               buttonDisabled
                 ? 'form-submit-button form-submit-button-disabled'
@@ -115,19 +116,20 @@ export default function SignUp() {
           >
             {loading ? (
               <>
-                Signing Up...
+                Logging in...
                 <img
                   src="/images/loading.png"
-                  alt="Loading.."
+                  alt="Loading..."
                   width={12}
                   className="ml-2 inline-block"
                 />
               </>
             ) : (
-              'Sign Up'
+              'Reset Password'
             )}
           </button>
         </div>
+
         <div className="form-row-inner">
           <Link href="/login" className="form-submit-button">
             Login

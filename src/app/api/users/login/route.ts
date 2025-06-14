@@ -1,4 +1,4 @@
-import connect from "@/dbConfig/dbConfig";
+import connect from "@/dbConfig/db-config";
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
@@ -26,6 +26,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!user.isVerified) {
+      return NextResponse.json(
+        { message: "User is not verified" },
+        { status: 403 }
+      );
+    }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -35,14 +42,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create JWT token payload
     const tokenData = {
       id: user._id.toString(),
       email: user.email,
-      username: user.username,
+      username: user.username
     };
 
-    // Sign JWT token (make sure TOKEN_SECRET is set in env)
     const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
       expiresIn: "1d",
     });
@@ -56,7 +61,6 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Set HTTP-only cookie with token
     response.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

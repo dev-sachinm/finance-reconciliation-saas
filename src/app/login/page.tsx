@@ -38,7 +38,6 @@ export default function Login() {
       setError('');
 
       const response = await axios.post('/api/users/login', user);
-      console.log(response)
       router.push(`/profile/${response.data.user.id}`);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed');
@@ -88,7 +87,7 @@ export default function Login() {
       </div>
 
       <div className="form-row-wrapper">
-        <div className="form-row-inner">
+        <div className="form-row-inner width33">
           <button
             onClick={login}
             className={
@@ -114,9 +113,14 @@ export default function Login() {
           </button>
         </div>
 
-        <div className="form-row-inner">
+        <div className="form-row-inner width33">
           <Link href="/signup" className="form-submit-button">
             Sign Up
+          </Link>
+        </div>
+        <div className="form-row-inner width33">
+          <Link href="/resetPassword" className="form-submit-button">
+            Reset Password
           </Link>
         </div>
       </div>
