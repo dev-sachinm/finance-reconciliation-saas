@@ -2,15 +2,18 @@
 
 import { useSession, signOut as nextAuthSignOut, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 
 const BlogPage = () => {
     const { data: session, status } = useSession();
     const router = useRouter();
-
-    console.log("Session:", session);
-    console.log("Status:", status);
+    const [userProfileData, setUserProfileData] = useState({})
+    const getUserProfile = async ()=>{
+        const userProfileResponse = await fetch('/api/profile', {method: 'GET'});
+        const userProfile = await userProfileResponse.json();
+        setUserProfileData(userProfile.user)
+    }
 
     useEffect(() => {
         if (status === "loading") {
@@ -22,6 +25,7 @@ const BlogPage = () => {
             signIn(undefined, { callbackUrl: encodeURIComponent(currentPath) });
             return;
         }
+        getUserProfile()
     }, [status, router]);
 
     if (status === "loading") {
@@ -60,6 +64,10 @@ const BlogPage = () => {
                     <h2 style={{ color: '#555', marginBottom: '10px' }}>Session Details (for debugging):</h2>
                     <pre style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '5px', overflowX: 'auto', fontSize: '0.9em' }}>
                         {JSON.stringify(session, null, 2)}
+                    </pre>
+                    <h1>User From DB</h1>
+                    <pre>
+                        {JSON.stringify(userProfileData, null, 2)}
                     </pre>
                 </div>
             </div>
