@@ -21,7 +21,7 @@ export default function VerifyAccount() {
       
       if (response.status === 200) {
         setStatus('success');
-        setTimeout(() => router.push('/login'), 2000);
+        setTimeout(() => router.push('/sign-in'), 2000);
       } else {
         throw new Error(response.data.message || 'Verification failed');
       }
